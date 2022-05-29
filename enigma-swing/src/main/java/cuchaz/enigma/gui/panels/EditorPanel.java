@@ -305,9 +305,16 @@ public class EditorPanel {
 
 	public void displayError(ClassHandleError t) {
 		this.setDisplayMode(DisplayMode.ERRORED);
-		String str = switch (t.type) {
-			case DECOMPILE -> "editor.decompile_error";
-			case REMAP -> "editor.remap_error";
+		String str = "";
+		switch (t.type) {
+			case DECOMPILE: {
+				str = "editor.decompile_error";
+				break;
+			}
+			case REMAP: {
+				str = "editor.remap_error";
+				break;
+			}
 		};
 		this.errorLabel.setText(I18n.translate(str));
 		this.errorTextArea.setText(t.getStackTrace());

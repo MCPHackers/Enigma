@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -45,7 +46,7 @@ public enum EnigmaMappingsWriter implements MappingsWriter {
 			Collection<ClassEntry> classes = mappings.getRootNodes()
 					.filter(entry -> entry.getEntry() instanceof ClassEntry)
 					.map(entry -> (ClassEntry) entry.getEntry())
-					.toList();
+					.collect(Collectors.toList());
 
 			progress.init(classes.size(), I18n.translate("progress.mappings.enigma_file.writing"));
 
@@ -66,7 +67,7 @@ public enum EnigmaMappingsWriter implements MappingsWriter {
 			Collection<ClassEntry> changedClasses = delta.getChangedRoots()
 					.filter(entry -> entry instanceof ClassEntry)
 					.map(entry -> (ClassEntry) entry)
-					.toList();
+					.collect(Collectors.toList());
 
 			applyDeletions(path, changedClasses, mappings, delta.getBaseMappings(), saveParameters.getFileNameFormat());
 
@@ -108,7 +109,7 @@ public enum EnigmaMappingsWriter implements MappingsWriter {
 				deletedClassStream = deletedClassStream.map(oldMappingTranslator::translate);
 			}
 
-			Collection<ClassEntry> deletedClasses = deletedClassStream.toList();
+			Collection<ClassEntry> deletedClasses = deletedClassStream.collect(Collectors.toList());
 
 			for (ClassEntry classEntry : deletedClasses) {
 				try {
@@ -209,14 +210,14 @@ public enum EnigmaMappingsWriter implements MappingsWriter {
 		}
 
 		String line = null;
-		if (entry instanceof ClassEntry classEntry) {
-			line = writeClass(classEntry, mapping);
-		} else if (entry instanceof MethodEntry methodEntry) {
-			line = writeMethod(methodEntry, mapping);
-		} else if (entry instanceof FieldEntry fieldEntry) {
-			line = writeField(fieldEntry, mapping);
-		} else if (entry instanceof LocalVariableEntry varEntry && mapping.targetName() != null) {
-			line = writeArgument(varEntry, mapping);
+		if (entry instanceof ClassEntry) {
+			line = writeClass((ClassEntry) entry, mapping);
+		} else if (entry instanceof MethodEntry) {
+			line = writeMethod((MethodEntry) entry, mapping);
+		} else if (entry instanceof FieldEntry) {
+			line = writeField((FieldEntry) entry, mapping);
+		} else if (entry instanceof LocalVariableEntry && mapping.targetName() != null) {
+			line = writeArgument((LocalVariableEntry) entry, mapping);
 		}
 
 		if (line != null) {
@@ -302,10 +303,18 @@ public enum EnigmaMappingsWriter implements MappingsWriter {
 		}
 	}
 
+	public static String repeat(String s, int n) {
+		if(s == null) {
+			return null;
+		}
+		final StringBuilder sb = new StringBuilder(s.length() * n);
+		for(int i = 0; i < n; i++) {
+			sb.append(s);
+		}
+		return sb.toString();
+	}
+
 	private String indent(String line, int depth) {
-		StringBuilder builder = new StringBuilder();
-		builder.append("\t".repeat(Math.max(0, depth)));
-		builder.append(line.trim());
-		return builder.toString();
+		return repeat("\t", (Math.max(0, depth))) + line.trim();
 	}
 }

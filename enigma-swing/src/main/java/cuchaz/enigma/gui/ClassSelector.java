@@ -63,7 +63,8 @@ public class ClassSelector extends JTree {
 				if (selectionListener != null && event.getClickCount() == 2) {
 					// get the selected node
 					TreePath path = getSelectionPath();
-					if (path != null && path.getLastPathComponent() instanceof ClassSelectorClassNode node) {
+					if (path != null && path.getLastPathComponent() instanceof ClassSelectorClassNode) {
+						ClassSelectorClassNode node = (ClassSelectorClassNode) path.getLastPathComponent();
 						selectionListener.onSelectClass(node.getObfEntry());
 					}
 				}
@@ -104,7 +105,8 @@ public class ClassSelector extends JTree {
 				TreePath path = getSelectionPath();
 
 				Object realPath = path.getLastPathComponent();
-				if (realPath instanceof DefaultMutableTreeNode node && data != null) {
+				if (realPath instanceof DefaultMutableTreeNode && data != null) {
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) realPath;
 					TreeNode parentNode = node.getParent();
 					if (parentNode == null)
 						return;
@@ -249,7 +251,8 @@ public class ClassSelector extends JTree {
 	public ClassEntry getSelectedClass() {
 		if (!isSelectionEmpty()) {
 			Object selectedNode = getSelectionPath().getLastPathComponent();
-			if (selectedNode instanceof ClassSelectorClassNode classNode) {
+			if (selectedNode instanceof ClassSelectorClassNode) {
+				ClassSelectorClassNode classNode = (ClassSelectorClassNode) selectedNode;
 				return classNode.getClassEntry();
 			}
 		}
@@ -259,9 +262,11 @@ public class ClassSelector extends JTree {
 	public String getSelectedPackage() {
 		if (!isSelectionEmpty()) {
 			Object selectedNode = getSelectionPath().getLastPathComponent();
-			if (selectedNode instanceof ClassSelectorPackageNode packageNode) {
+			if (selectedNode instanceof ClassSelectorPackageNode) {
+				ClassSelectorPackageNode packageNode = (ClassSelectorPackageNode) selectedNode;
 				return packageNode.getPackageName();
-			} else if (selectedNode instanceof ClassSelectorClassNode classNode) {
+			} else if (selectedNode instanceof ClassSelectorClassNode) {
+				ClassSelectorClassNode classNode = (ClassSelectorClassNode) selectedNode;
 				return classNode.getClassEntry().getPackageName();
 			}
 		}
@@ -316,8 +321,14 @@ public class ClassSelector extends JTree {
 
 		for (StateEntry entry : expansionState) {
 			switch (entry.state) {
-				case SELECTED -> tree.addSelectionPath(entry.path);
-				case EXPANDED -> tree.expandPath(entry.path);
+				case SELECTED: {
+					tree.addSelectionPath(entry.path);
+					break;
+				}
+				case EXPANDED: {
+					tree.expandPath(entry.path);
+					break;
+				}
 			}
 		}
 	}

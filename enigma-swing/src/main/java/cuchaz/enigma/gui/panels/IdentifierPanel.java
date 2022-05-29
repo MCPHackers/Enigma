@@ -239,12 +239,30 @@ public class IdentifierPanel {
 		}
 
 		public ConvertingTextField addRenameTextField(EditableType type, String c2) {
-			String description = switch(type) {
-				case CLASS -> I18n.translate("info_panel.identifier.class");
-				case METHOD -> I18n.translate("info_panel.identifier.method");
-				case FIELD -> I18n.translate("info_panel.identifier.field");
-				case PARAMETER, LOCAL_VARIABLE -> I18n.translate("info_panel.identifier.variable");
-				default -> throw new IllegalStateException("Unexpected value: " + type);
+			String description = "";
+			switch(type) {
+				case CLASS: {
+					description = I18n.translate("info_panel.identifier.class");
+					break;
+				}
+				case METHOD: {
+					description = I18n.translate("info_panel.identifier.method");
+					break;
+				}
+				case FIELD: {
+					description = I18n.translate("info_panel.identifier.field");
+					break;
+				}
+				case PARAMETER: {
+					// Fall through.
+				}
+				case LOCAL_VARIABLE: {
+					I18n.translate("info_panel.identifier.variable");
+					break;
+				}
+				default: {
+					throw new IllegalStateException("Unexpected value: " + type);
+				}
 			};
 
 			if (this.gui.getController().project.isRenamable(e)) {

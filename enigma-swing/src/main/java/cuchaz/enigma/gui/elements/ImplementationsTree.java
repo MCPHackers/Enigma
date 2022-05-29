@@ -18,10 +18,10 @@ public class ImplementationsTree extends AbstractInheritanceTree {
 	@Nullable
 	@Override
 	protected DefaultMutableTreeNode getNodeFor(Entry<?> entry) {
-		if (entry instanceof ClassEntry classEntry) {
-			return this.gui.getController().getClassImplementations(classEntry);
-		} else if (entry instanceof MethodEntry methodEntry) {
-			return this.gui.getController().getMethodImplementations(methodEntry);
+		if (entry instanceof ClassEntry) {
+			return this.gui.getController().getClassImplementations((ClassEntry) entry);
+		} else if (entry instanceof MethodEntry) {
+			return this.gui.getController().getMethodImplementations((MethodEntry) entry);
 		}
 
 		return null;

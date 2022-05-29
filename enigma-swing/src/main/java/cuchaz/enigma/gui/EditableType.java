@@ -20,8 +20,8 @@ public enum EditableType {
 
 		if (entry instanceof ClassEntry) {
 			type = EditableType.CLASS;
-		} else if (entry instanceof MethodEntry me) {
-			if (me.isConstructor()) {
+		} else if (entry instanceof MethodEntry) {
+			if (((MethodEntry) entry).isConstructor()) {
 				// treat constructors as classes because renaming one renames
 				// the class
 				type = EditableType.CLASS;
@@ -30,8 +30,8 @@ public enum EditableType {
 			}
 		} else if (entry instanceof FieldEntry) {
 			type = EditableType.FIELD;
-		} else if (entry instanceof LocalVariableEntry lve) {
-			if (lve.isArgument()) {
+		} else if (entry instanceof LocalVariableEntry) {
+			if (((LocalVariableEntry) entry).isArgument()) {
 				type = EditableType.PARAMETER;
 			} else {
 				type = EditableType.LOCAL_VARIABLE;

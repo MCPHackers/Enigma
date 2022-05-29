@@ -15,9 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.google.common.io.MoreFiles;
 import joptsimple.*;
@@ -46,20 +44,20 @@ public class Main {
 				.withRequiredArg()
 				.withValuesConvertedBy(PathConverter.INSTANCE);
 
-		parser.acceptsAll(List.of("edit-all", "e"), "Enable editing everything");
-		parser.acceptsAll(List.of("no-edit-all", "E"), "Disable editing everything");
-		parser.acceptsAll(List.of("edit-classes", "c"), "Enable editing class names");
-		parser.acceptsAll(List.of("no-edit-classes", "C"), "Disable editing class names");
-		parser.acceptsAll(List.of("edit-methods", "m"), "Enable editing method names");
-		parser.acceptsAll(List.of("no-edit-methods", "M"), "Disable editing method names");
-		parser.acceptsAll(List.of("edit-fields", "f"), "Enable editing field names");
-		parser.acceptsAll(List.of("no-edit-fields", "F"), "Disable editing field names");
-		parser.acceptsAll(List.of("edit-parameters", "p"), "Enable editing parameter names");
-		parser.acceptsAll(List.of("no-edit-parameters", "P"), "Disable editing parameter names");
-		parser.acceptsAll(List.of("edit-locals"), "Enable editing local variable names");
-		parser.acceptsAll(List.of("no-edit-locals"), "Disable editing local variable names");
-		parser.acceptsAll(List.of("edit-javadocs", "d"), "Enable editing Javadocs");
-		parser.acceptsAll(List.of("no-edit-javadocs", "D"), "Disable editing Javadocs");
+		parser.acceptsAll(Arrays.asList("edit-all", "e"), "Enable editing everything");
+		parser.acceptsAll(Arrays.asList("no-edit-all", "E"), "Disable editing everything");
+		parser.acceptsAll(Arrays.asList("edit-classes", "c"), "Enable editing class names");
+		parser.acceptsAll(Arrays.asList("no-edit-classes", "C"), "Disable editing class names");
+		parser.acceptsAll(Arrays.asList("edit-methods", "m"), "Enable editing method names");
+		parser.acceptsAll(Arrays.asList("no-edit-methods", "M"), "Disable editing method names");
+		parser.acceptsAll(Arrays.asList("edit-fields", "f"), "Enable editing field names");
+		parser.acceptsAll(Arrays.asList("no-edit-fields", "F"), "Disable editing field names");
+		parser.acceptsAll(Arrays.asList("edit-parameters", "p"), "Enable editing parameter names");
+		parser.acceptsAll(Arrays.asList("no-edit-parameters", "P"), "Disable editing parameter names");
+		parser.acceptsAll(Collections.singletonList("edit-locals"), "Enable editing local variable names");
+		parser.acceptsAll(Collections.singletonList("no-edit-locals"), "Disable editing local variable names");
+		parser.acceptsAll(Arrays.asList("edit-javadocs", "d"), "Enable editing Javadocs");
+		parser.acceptsAll(Arrays.asList("no-edit-javadocs", "D"), "Disable editing Javadocs");
 
 		parser.accepts("single-class-tree", "Unify the deobfuscated and obfuscated class panels");
 
@@ -78,26 +76,64 @@ public class Main {
 			for (OptionSpec<?> spec : options.specs()) {
 				for (String s : spec.options()) {
 					switch (s) {
-						case "edit-all" -> editables.addAll(List.of(EditableType.values()));
-						case "no-edit-all" -> editables.clear();
-						case "edit-classes" -> editables.add(EditableType.CLASS);
-						case "no-edit-classes" -> editables.remove(EditableType.CLASS);
-						case "edit-methods" -> editables.add(EditableType.METHOD);
-						case "no-edit-methods" -> editables.remove(EditableType.METHOD);
-						case "edit-fields" -> editables.add(EditableType.FIELD);
-						case "no-edit-fields" -> editables.remove(EditableType.FIELD);
-						case "edit-parameters" -> editables.add(EditableType.PARAMETER);
-						case "no-edit-parameters" -> editables.remove(EditableType.PARAMETER);
-						case "edit-locals" -> {
+						case "edit-all": {
+							editables.addAll(Arrays.asList(EditableType.values()));
+							break;
+						}
+						case "no-edit-all": {
+							editables.clear();
+							break;
+						}
+						case "edit-classes": {
+							editables.add(EditableType.CLASS);
+							break;
+						}
+						case "no-edit-classes": {
+							editables.remove(EditableType.CLASS);
+							break;
+						}
+						case "edit-methods": {
+							editables.add(EditableType.METHOD);
+							break;
+						}
+						case "no-edit-methods": {
+							editables.remove(EditableType.METHOD);
+							break;
+						}
+						case "edit-fields": {
+							editables.add(EditableType.FIELD);
+							break;
+						}
+						case "no-edit-fields": {
+							editables.remove(EditableType.FIELD);
+							break;
+						}
+						case "edit-parameters": {
+							editables.add(EditableType.PARAMETER);
+							break;
+						}
+						case "no-edit-parameters": {
+							editables.remove(EditableType.PARAMETER);
+							break;
+						}
+						case "edit-locals": {
 							editables.add(EditableType.LOCAL_VARIABLE);
 							System.err.println("warning: --edit-locals has no effect as local variables are currently not editable");
+							break;
 						}
-						case "no-edit-locals" -> {
+						case "no-edit-locals": {
 							editables.remove(EditableType.LOCAL_VARIABLE);
 							System.err.println("warning: --no-edit-locals has no effect as local variables are currently not editable");
+							break;
 						}
-						case "edit-javadocs" -> editables.add(EditableType.JAVADOC);
-						case "no-edit-javadocs" -> editables.remove(EditableType.JAVADOC);
+						case "edit-javadocs": {
+							editables.add(EditableType.JAVADOC);
+							break;
+						}
+						case "no-edit-javadocs": {
+							editables.remove(EditableType.JAVADOC);
+							break;
+						}
 					}
 				}
 			}

@@ -62,12 +62,12 @@ public class CallsTree {
 	public void showCalls(Entry<?> entry, boolean recurse) {
 		TreeNode node = null;
 
-		if (entry instanceof ClassEntry classEntry) {
-			node = this.gui.getController().getClassReferences(classEntry);
-		} else if (entry instanceof FieldEntry fieldEntry) {
-			node = this.gui.getController().getFieldReferences(fieldEntry);
-		} else if (entry instanceof MethodEntry methodEntry) {
-			node = this.gui.getController().getMethodReferences(methodEntry, recurse);
+		if (entry instanceof ClassEntry) {
+			node = this.gui.getController().getClassReferences((ClassEntry) entry);
+		} else if (entry instanceof FieldEntry) {
+			node = this.gui.getController().getFieldReferences((FieldEntry) entry);
+		} else if (entry instanceof MethodEntry) {
+			node = this.gui.getController().getMethodReferences((MethodEntry) entry, recurse);
 		}
 
 		this.callsTree.setModel(new DefaultTreeModel(node));
@@ -96,7 +96,8 @@ public class CallsTree {
 
 			Object node = path.getLastPathComponent();
 
-			if (node instanceof ReferenceTreeNode referenceNode) {
+			if (node instanceof ReferenceTreeNode) {
+				ReferenceTreeNode<Entry<?>, Entry<?>> referenceNode = (ReferenceTreeNode<Entry<?>, Entry<?>>) node;
 				if (referenceNode.getReference() != null) {
 					this.gui.getController().navigateTo(referenceNode.getReference());
 				} else {

@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.swing.JOptionPane;
@@ -320,7 +321,7 @@ public class GuiController implements ClientPacketHandler {
 				.stream()
 				.flatMap(r -> index.getReferenceTokens(r).stream())
 				.sorted()
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	public void openPreviousReference() {

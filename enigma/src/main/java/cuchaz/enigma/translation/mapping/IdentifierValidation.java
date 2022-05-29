@@ -11,6 +11,7 @@
 
 package cuchaz.enigma.translation.mapping;
 
+import java.util.Arrays;
 import java.util.List;
 
 import cuchaz.enigma.utils.validation.Message;
@@ -22,7 +23,7 @@ public final class IdentifierValidation {
 	private IdentifierValidation() {
 	}
 
-	private static final List<String> ILLEGAL_IDENTIFIERS = List.of(
+	private static final List<String> ILLEGAL_IDENTIFIERS = Arrays.asList(
 			"abstract", "assert", "boolean", "break", "byte", "case", "catch", "char", "class", "const",
 			"continue", "default", "do", "double", "else", "enum", "extends", "false", "final", "finally",
 			"float", "for", "goto", "if", "implements", "import", "instanceof", "int", "interface", "long",

@@ -1,6 +1,7 @@
 package cuchaz.enigma.translation.mapping;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -53,7 +54,7 @@ public class IndexEntryResolver implements EntryResolver {
 				if (!resolvedChildren.isEmpty()) {
 					return resolvedChildren.stream()
 							.map(resolvedChild -> (E) entry.replaceAncestor(classChild, resolvedChild))
-							.toList();
+							.collect(Collectors.toList());
 				}
 			}
 		}

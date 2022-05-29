@@ -18,10 +18,10 @@ public class InheritanceTree extends AbstractInheritanceTree {
 	@Nullable
 	@Override
 	protected DefaultMutableTreeNode getNodeFor(Entry<?> entry) {
-		if (entry instanceof ClassEntry classEntry) {
-			return this.gui.getController().getClassInheritance(classEntry);
-		} else if (entry instanceof MethodEntry methodEntry) {
-			return this.gui.getController().getMethodInheritance(methodEntry);
+		if (entry instanceof ClassEntry) {
+			return this.gui.getController().getClassInheritance((ClassEntry) entry);
+		} else if (entry instanceof MethodEntry) {
+			return this.gui.getController().getMethodInheritance((MethodEntry) entry);
 		}
 
 		return null;

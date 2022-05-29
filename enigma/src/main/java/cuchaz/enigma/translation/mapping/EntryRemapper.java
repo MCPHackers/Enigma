@@ -3,6 +3,7 @@ package cuchaz.enigma.translation.mapping;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.Nonnull;
@@ -97,7 +98,7 @@ public class EntryRemapper {
 		// Find all the methods in this record class
 		List<MethodEntry> classMethods = jarIndex.getEntryIndex().getMethods().stream()
 				.filter(entry -> classEntry.equals(entry.getParent()))
-				.toList();
+				.collect(Collectors.toList());
 
 		MethodEntry methodEntry = null;
 

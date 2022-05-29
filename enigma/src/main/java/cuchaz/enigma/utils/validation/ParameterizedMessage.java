@@ -26,10 +26,10 @@ public final class ParameterizedMessage {
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof ParameterizedMessage that)) return false;
-		return Objects.equals(message, that.message) &&
-				Arrays.equals(params, that.params) &&
-				Objects.equals(target, that.target);
+		if (!(o instanceof ParameterizedMessage)) return false;
+		return Objects.equals(message, ((ParameterizedMessage) o).message) &&
+				Arrays.equals(params, ((ParameterizedMessage) o).params) &&
+				Objects.equals(target, ((ParameterizedMessage) o).target);
 	}
 
 	@Override

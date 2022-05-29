@@ -24,6 +24,7 @@ import cuchaz.enigma.translation.representation.entry.MethodEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MappingsChecker {
 	private final JarIndex index;
@@ -39,7 +40,7 @@ public class MappingsChecker {
 
 		Collection<Entry<?>> obfEntries = mappings.getAllEntries()
 				.filter(e -> e instanceof ClassEntry || e instanceof MethodEntry || e instanceof FieldEntry || e instanceof LocalVariableEntry)
-				.toList();
+				.collect(Collectors.toList());
 
 		progress.init(obfEntries.size(), "Checking for dropped mappings");
 
@@ -68,9 +69,9 @@ public class MappingsChecker {
 			return true;
 		}
 
-		if (entry instanceof LocalVariableEntry localVariableEntry) {
+		if (entry instanceof LocalVariableEntry) {
 			// Drop local variables only if the method entry is to be dropped
-			return shouldDropEntry(localVariableEntry.getParent());
+			return shouldDropEntry(((LocalVariableEntry) entry).getParent());
 		}
 
 		Collection<Entry<?>> resolvedEntries = index.getEntryResolver().resolveEntry(entry, ResolutionStrategy.RESOLVE_ROOT);

@@ -72,9 +72,11 @@ public class FieldReferenceTreeNode extends DefaultMutableTreeNode implements Re
 
 		if (recurse && children != null) {
 			for (Object node : children) {
-				if (node instanceof MethodReferenceTreeNode methodNode) {
+				if (node instanceof MethodReferenceTreeNode) {
+					MethodReferenceTreeNode methodNode = (MethodReferenceTreeNode) node;
 					methodNode.load(index, true, false);
-				} else if (node instanceof FieldReferenceTreeNode fieldNode) {
+				} else if (node instanceof FieldReferenceTreeNode) {
+					FieldReferenceTreeNode fieldNode = (FieldReferenceTreeNode) node;
 					fieldNode.load(index, true);
 				}
 			}

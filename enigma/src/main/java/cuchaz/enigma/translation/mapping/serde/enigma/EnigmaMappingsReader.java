@@ -6,6 +6,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +46,7 @@ public enum EnigmaMappingsReader implements MappingsReader {
 			List<Path> files = Files.walk(root)
 					.filter(f -> !Files.isDirectory(f))
 					.filter(f -> f.toString().endsWith(".mapping"))
-					.toList();
+					.collect(Collectors.toList());
 
 			progress.init(files.size(), I18n.translate("progress.mappings.enigma_directory.loading"));
 			int step = 0;

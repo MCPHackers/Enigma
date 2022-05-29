@@ -12,6 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class StructureTreeNode extends DefaultMutableTreeNode {
@@ -37,39 +38,62 @@ public class StructureTreeNode extends DefaultMutableTreeNode {
     public void load(EnigmaProject project, StructureTreeOptions options) {
         Stream<ParentedEntry> children = project.getJarIndex().getChildrenByClass().get(this.parentEntry).stream();
 
-        children = switch (options.obfuscationVisibility()) {
-            case ALL -> children;
-            case OBFUSCATED -> children
-                    // remove deobfuscated members if only obfuscated, unless it's an inner class
-                    .filter(e -> (e instanceof ClassEntry) || (project.isObfuscated(e) && project.isRenamable(e)))
-                    // keep constructor methods if the class is obfuscated
-                    .filter(e -> !(e instanceof MethodEntry m && m.isConstructor()) || project.isObfuscated(e.getParent()));
-            case DEOBFUSCATED -> children.filter(e -> (e instanceof ClassEntry)
-                    || (!project.isObfuscated(e) && project.isRenamable(e))
-                    // keep constructor methods if the class is deobfuscated
-                    || (e instanceof MethodEntry m && m.isConstructor()) && !project.isObfuscated(e.getParent()));
-        };
+        switch (options.getObfuscationVisibility()) {
+            case ALL: {
+                break;
+            }
+            case OBFUSCATED: {
+                // remove deobfuscated members if only obfuscated, unless it's an inner class
+                children = children.filter(e -> (e instanceof ClassEntry) || (project.isObfuscated(e) && project.isRenamable(e)))
+                // keep constructor methods if the class is obfuscated
+                .filter(e -> !(e instanceof MethodEntry && ((MethodEntry) e).isConstructor()) || project.isObfuscated(e.getParent()));
+                break;
+            }
+            case DEOBFUSCATED: {
+                children = children.filter(e -> (e instanceof ClassEntry)
+                        || (!project.isObfuscated(e) && project.isRenamable(e))
+                        // keep constructor methods if the class is deobfuscated
+                        || (e instanceof MethodEntry && ((MethodEntry) e).isConstructor()) && !project.isObfuscated(e.getParent()));
+                break;
+            }
+        }
 
-        children = switch (options.documentationVisibility()) {
-            case ALL -> children;
+        switch (options.getDocumentationVisibility()) {
+            case ALL: {
+                break;
+            }
             // TODO remove EntryRemapper.deobfuscate() calls when javadocs will no longer be tied to deobfuscation
-            case DOCUMENTED -> children.filter(e -> (e instanceof ClassEntry) || (project.getMapper().deobfuscate(e).getJavadocs() != null && !project.getMapper().deobfuscate(e).getJavadocs().isBlank()));
-            case NON_DOCUMENTED -> children.filter(e -> (e instanceof ClassEntry) || (project.getMapper().deobfuscate(e).getJavadocs() == null || project.getMapper().deobfuscate(e).getJavadocs().isBlank()));
+            case DOCUMENTED: {
+                children = children.filter(e -> (e instanceof ClassEntry) || (project.getMapper().deobfuscate(e).getJavadocs() != null && !project.getMapper().deobfuscate(e).getJavadocs().chars().allMatch(Character::isWhitespace)));
+                break;
+            }
+            case NON_DOCUMENTED: {
+                children = children.filter(e -> (e instanceof ClassEntry) || (project.getMapper().deobfuscate(e).getJavadocs() == null || project.getMapper().deobfuscate(e).getJavadocs().chars().allMatch(Character::isWhitespace)));
+                break;
+            }
         };
 
-        children = switch (options.sortingOrder()) {
-            case DEFAULT -> children;
-            case A_Z -> children.sorted(Comparator.comparing(e -> (e instanceof MethodEntry m && m.isConstructor())
-                    // compare the class name when the entry is a constructor
-                    ? project.getMapper().deobfuscate(e.getParent()).getSimpleName().toLowerCase()
-                    : project.getMapper().deobfuscate(e).getSimpleName().toLowerCase()));
-            case Z_A -> children.sorted(Comparator.comparing(e -> (e instanceof MethodEntry m && m.isConstructor())
-                    ? project.getMapper().deobfuscate(((ParentedEntry<?>) e).getParent()).getSimpleName().toLowerCase()
-                    : project.getMapper().deobfuscate((ParentedEntry<?>) e).getSimpleName().toLowerCase())
-                    .reversed());
+        switch (options.getSortingOrder()) {
+            case DEFAULT: {
+                break;
+            }
+            case A_Z: {
+                children = children.sorted(Comparator.comparing(e -> (e instanceof MethodEntry && ((MethodEntry) e).isConstructor())
+                        // compare the class name when the entry is a constructor
+                        ? project.getMapper().deobfuscate(e.getParent()).getSimpleName().toLowerCase()
+                        : project.getMapper().deobfuscate(e).getSimpleName().toLowerCase()));
+                break;
+            }
+            case Z_A: {
+                children = children.sorted(Comparator.comparing(e -> (e instanceof MethodEntry && ((MethodEntry) e).isConstructor())
+                                ? project.getMapper().deobfuscate(((ParentedEntry<?>) e).getParent()).getSimpleName().toLowerCase()
+                                : project.getMapper().deobfuscate((ParentedEntry<?>) e).getSimpleName().toLowerCase())
+                        .reversed());
+                break;
+            }
         };
 
-        for (ParentedEntry<?> child : children.toList()) {
+        for (ParentedEntry<?> child : children.collect(Collectors.toList())) {
             StructureTreeNode childNode = new StructureTreeNode(project, this.parentEntry, child);
 
             if (child instanceof ClassEntry) {
@@ -119,11 +143,13 @@ public class StructureTreeNode extends DefaultMutableTreeNode {
     public String toHtml() {
         List<String> modifiers = new ArrayList<>();
 
-        if (this.entry instanceof DefEntry<?> defEntry) {
+        if (this.entry instanceof DefEntry<?>) {
+            DefEntry<?> defEntry = (DefEntry<?>) this.entry;
             AccessFlags access = defEntry.getAccess();
             boolean isInterfaceMethod = false;
 
-            if (this.entry instanceof MethodEntry && this.entry.getParent() instanceof ClassDefEntry parent) {
+            if (this.entry instanceof MethodEntry && this.entry.getParent() instanceof ClassDefEntry) {
+                ClassDefEntry parent = (ClassDefEntry) this.entry.getParent();
                 isInterfaceMethod = parent.getAccess().isInterface();
             }
 

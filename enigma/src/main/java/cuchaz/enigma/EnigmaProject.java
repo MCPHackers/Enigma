@@ -120,7 +120,8 @@ public class EnigmaProject {
 	}
 
 	public boolean isRenamable(Entry<?> obfEntry) {
-		if (obfEntry instanceof MethodEntry obfMethodEntry) {
+		if (obfEntry instanceof MethodEntry) {
+			MethodEntry obfMethodEntry = (MethodEntry) obfEntry;
 			// HACKHACK: Object methods are not obfuscated identifiers
 			String name = obfMethodEntry.getName();
 			String sig = obfMethodEntry.getDesc().toString();
@@ -249,14 +250,14 @@ public class EnigmaProject {
 		}
 
 		public SourceExport decompile(ProgressListener progress, DecompilerService decompilerService, DecompileErrorStrategy errorStrategy) {
-			List<ClassSource> decompiled = this.decompileStream(progress, decompilerService, errorStrategy).toList();
+			List<ClassSource> decompiled = this.decompileStream(progress, decompilerService, errorStrategy).collect(Collectors.toList());
 			return new SourceExport(decompiled);
 		}
 
 		public Stream<ClassSource> decompileStream(ProgressListener progress, DecompilerService decompilerService, DecompileErrorStrategy errorStrategy) {
 			Collection<ClassNode> classes = this.compiled.values().stream()
 					.filter(classNode -> classNode.name.indexOf('$') == -1)
-					.toList();
+					.collect(Collectors.toList());;
 
 			progress.init(classes.size(), I18n.translate("progress.classes.decompiling"));
 

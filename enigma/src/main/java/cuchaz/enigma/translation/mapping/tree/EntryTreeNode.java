@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public interface EntryTreeNode<T> {
 	@Nullable
@@ -31,7 +32,7 @@ public interface EntryTreeNode<T> {
 	default List<? extends Entry<?>> getChildrenRecursively() {
 		return getNodesRecursively().stream()
 				.map(EntryTreeNode::getEntry)
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	default boolean hasValue() {

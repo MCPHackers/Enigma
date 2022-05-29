@@ -45,9 +45,10 @@ public abstract class AbstractInheritanceTree {
 			}
 
 			Object node = path.getLastPathComponent();
-			if (node instanceof ClassInheritanceTreeNode classNode) {
-				gui.getController().navigateTo(new ClassEntry(classNode.getObfClassName()));
-			} else if (node instanceof MethodInheritanceTreeNode methodNode) {
+			if (node instanceof ClassInheritanceTreeNode) {
+				gui.getController().navigateTo(new ClassEntry(((ClassInheritanceTreeNode) node).getObfClassName()));
+			} else if (node instanceof MethodInheritanceTreeNode) {
+				MethodInheritanceTreeNode methodNode = (MethodInheritanceTreeNode) node;
 				if (methodNode.isImplemented()) {
 					gui.getController().navigateTo(methodNode.getMethodEntry());
 				}

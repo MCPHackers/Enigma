@@ -148,8 +148,8 @@ public class EditorPopupMenu {
 
 		boolean isClassEntry = referenceEntry instanceof ClassEntry;
 		boolean isFieldEntry = referenceEntry instanceof FieldEntry;
-		boolean isMethodEntry = referenceEntry instanceof MethodEntry me && !me.isConstructor();
-		boolean isConstructorEntry = referenceEntry instanceof MethodEntry me && me.isConstructor();
+		boolean isMethodEntry = referenceEntry instanceof MethodEntry && !((MethodEntry) referenceEntry).isConstructor();
+		boolean isConstructorEntry = referenceEntry instanceof MethodEntry && ((MethodEntry) referenceEntry).isConstructor();
 		boolean isRenamable = ref != null && controller.project.isRenamable(ref);
 
 		EditableType type = EditableType.fromEntry(referenceEntry);

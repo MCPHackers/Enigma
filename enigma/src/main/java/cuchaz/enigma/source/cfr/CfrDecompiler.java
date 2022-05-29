@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.tree.ClassNode;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 public class CfrDecompiler implements Decompiler {
@@ -25,7 +26,7 @@ public class CfrDecompiler implements Decompiler {
     private final ClassFileSource2 classFileSource;
 
     public CfrDecompiler(ClassProvider classProvider, SourceSettings sourceSettings) {
-        this.options = OptionsImpl.getFactory().create( Map.of("trackbytecodeloc", "true"));
+        this.options = OptionsImpl.getFactory().create(Collections.singletonMap("trackbytecodeloc", "true"));
         this.settings = sourceSettings;
         this.classFileSource = new ClassFileSource(classProvider);
     }
@@ -35,7 +36,13 @@ public class CfrDecompiler implements Decompiler {
         return new CfrSource(className, settings, this.options, this.classFileSource, mapper);
     }
 
-    private record ClassFileSource(ClassProvider classProvider) implements ClassFileSource2 {
+    private class ClassFileSource implements ClassFileSource2 {
+        private final ClassProvider classProvider;
+
+        public ClassFileSource(ClassProvider classProvider) {
+            this.classProvider = classProvider;
+        }
+
         @Override
         public JarContent addJarContent(String s, AnalysisType analysisType) {
             return null;

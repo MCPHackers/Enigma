@@ -3,6 +3,7 @@ package cuchaz.enigma.translation.mapping;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import cuchaz.enigma.analysis.index.InheritanceIndex;
 import cuchaz.enigma.analysis.index.JarIndex;
@@ -47,7 +48,7 @@ public class MappingValidator {
 
 			List<? extends Entry<?>> translatedSiblings = obfToDeobf.getSiblings(relatedEntry).stream()
 					.map(deobfuscator::translate)
-					.toList();
+					.collect(Collectors.toList());
 
 			if (!isUnique(translatedEntry, translatedSiblings, name)) {
 				Entry<?> parent = translatedEntry.getParent();

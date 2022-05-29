@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum SrgMappingsWriter implements MappingsWriter {
 	INSTANCE;
@@ -45,7 +46,7 @@ public enum SrgMappingsWriter implements MappingsWriter {
 
 		List<? extends Entry<?>> rootEntries = Lists.newArrayList(mappings).stream()
 				.map(EntryTreeNode::getEntry)
-				.toList();
+				.collect(Collectors.toList());
 		progress.init(rootEntries.size(), I18n.translate("progress.mappings.srg_file.generating"));
 
 		int steps = 0;

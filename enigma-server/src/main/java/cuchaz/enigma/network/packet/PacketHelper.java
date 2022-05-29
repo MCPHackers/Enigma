@@ -44,25 +44,28 @@ public class PacketHelper {
 				return new ClassEntry((ClassEntry) parent, name, javadocs);
 			}
 			case ENTRY_FIELD: {
-				if (!(parent instanceof ClassEntry parentClass)) {
+				if (!(parent instanceof ClassEntry)) {
 					throw new IOException("Field requires class parent");
 				}
+				ClassEntry parentClass = (ClassEntry) parent;
 
 				TypeDescriptor desc = new TypeDescriptor(readString(input));
 				return new FieldEntry(parentClass, name, desc, javadocs);
 			}
 			case ENTRY_METHOD: {
-				if (!(parent instanceof ClassEntry parentClass)) {
+				if (!(parent instanceof ClassEntry)) {
 					throw new IOException("Method requires class parent");
 				}
+				ClassEntry parentClass = (ClassEntry) parent;
 
 				MethodDescriptor desc = new MethodDescriptor(readString(input));
 				return new MethodEntry(parentClass, name, desc, javadocs);
 			}
 			case ENTRY_LOCAL_VAR: {
-				if (!(parent instanceof MethodEntry parentMethod)) {
+				if (!(parent instanceof MethodEntry)) {
 					throw new IOException("Local variable requires method parent");
 				}
+				MethodEntry parentMethod = (MethodEntry) parent;
 
 				int index = input.readUnsignedShort();
 				boolean parameter = input.readBoolean();

@@ -93,11 +93,13 @@ public class ProgressDialog implements ProgressListener, AutoCloseable {
 
 			return progress;
 		}, SwingUtilities::invokeLater).thenAcceptAsync(progress -> {
-			try (progress) {
+			try {
 				runnable.run(progress);
 			} catch (Exception e) {
 				CrashDialog.show(e);
 				throw new RuntimeException(e);
+			} finally {
+				progress.close();
 			}
 		});
 	}

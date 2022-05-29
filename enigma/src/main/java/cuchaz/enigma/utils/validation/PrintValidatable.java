@@ -15,10 +15,20 @@ public class PrintValidatable implements Validatable {
 	public static void formatMessage(PrintStream w, ParameterizedMessage message) {
 		String text = message.getText();
 		String longText = message.getLongText();
-		String type = switch (message.message.type) {
-			case INFO -> "info";
-			case WARNING -> "warning";
-			case ERROR -> "error";
+		String type = "";
+		switch (message.message.type) {
+			case INFO: {
+				type = "info";
+				break;
+			}
+			case WARNING: {
+				type = "warning";
+				break;
+			}
+			case ERROR: {
+				type = "error";
+				break;
+			}
 		};
 		w.printf("%s: %s\n", type, text);
 

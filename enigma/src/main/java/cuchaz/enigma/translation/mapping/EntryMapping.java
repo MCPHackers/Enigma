@@ -1,22 +1,42 @@
 package cuchaz.enigma.translation.mapping;
 
+import cuchaz.enigma.analysis.Access;
+
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public record EntryMapping(
-		@Nullable String targetName,
-		@Nonnull AccessModifier accessModifier,
-		@Nullable String javadoc
-) {
+public class EntryMapping {
+	private String targetName = "";
+	private AccessModifier accessModifier;
+	private String javadoc = "";
+
+	public EntryMapping(@Nullable String targetName, @Nonnull AccessModifier accessModifier, @Nullable String javadoc) {
+		this.targetName = targetName;
+		this.accessModifier = accessModifier;
+		this.javadoc = javadoc;
+	}
+
+	public String targetName() {
+		return this.targetName;
+	}
+
+	public AccessModifier accessModifier() {
+		return this.accessModifier;
+	}
+
+	public String javadoc() {
+		return this.javadoc;
+	}
+
 	public static final EntryMapping DEFAULT = new EntryMapping(null, AccessModifier.UNCHANGED, null);
 
-	public EntryMapping {
+	public EntryMapping (AccessModifier accessModifier) {
 		if (accessModifier == null) {
-			accessModifier = AccessModifier.UNCHANGED;
+			this.accessModifier = AccessModifier.UNCHANGED;
 			System.err.println("EntryMapping initialized with 'null' accessModifier, assuming UNCHANGED. Please fix.");
-			Arrays.stream(new Exception().getStackTrace()).skip(1).map("\tat %s"::formatted).forEach(System.err::println);
+			Arrays.stream(new Exception().getStackTrace()).skip(1).map((o) -> String.format("\tat %s", o)).forEach(System.err::println);
 		}
 	}
 
