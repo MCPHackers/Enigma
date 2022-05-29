@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.ClassNode;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CfrDecompiler implements Decompiler {
@@ -26,7 +27,12 @@ public class CfrDecompiler implements Decompiler {
     private final ClassFileSource2 classFileSource;
 
     public CfrDecompiler(ClassProvider classProvider, SourceSettings sourceSettings) {
-        this.options = OptionsImpl.getFactory().create(Collections.singletonMap("trackbytecodeloc", "true"));
+        Map<String, String> options = new HashMap<String, String>() {{
+            put(OptionsImpl.TRACK_BYTECODE_LOC.getName(), "true");
+           put(OptionsImpl.REMOVE_INNER_CLASS_SYNTHETICS.getName(), "false");
+           put(OptionsImpl.HIDE_BRIDGE_METHODS.getName(), "false");
+        }};
+        this.options = OptionsImpl.getFactory().create(options);
         this.settings = sourceSettings;
         this.classFileSource = new ClassFileSource(classProvider);
     }
