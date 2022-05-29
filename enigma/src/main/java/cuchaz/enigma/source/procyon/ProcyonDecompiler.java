@@ -49,7 +49,7 @@ public class ProcyonDecompiler implements Decompiler {
 		decompilerSettings.setForceExplicitImports(getSystemPropertyAsBoolean("enigma.forceExplicitImports", true));
 		decompilerSettings.setForceExplicitTypeArguments(getSystemPropertyAsBoolean("enigma.forceExplicitTypeArguments", true));
 		decompilerSettings.setShowDebugLineNumbers(getSystemPropertyAsBoolean("enigma.showDebugLineNumbers", false));
-		decompilerSettings.setShowSyntheticMembers(getSystemPropertyAsBoolean("enigma.showSyntheticMembers", false));
+		decompilerSettings.setShowSyntheticMembers(getSystemPropertyAsBoolean("enigma.showSyntheticMembers", true));
 		decompilerSettings.setTypeLoader(typeLoader);
 
 		JavaFormattingOptions formattingOptions = decompilerSettings.getJavaFormattingOptions();
